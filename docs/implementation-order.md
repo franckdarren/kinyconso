@@ -3,6 +3,7 @@
 Roadmap phasée pour la réalisation complète de la PWA e-commerce. Chaque phase a des **livrables concrets** et des **critères d'acceptation** vérifiables. Les phases sont séquentielles sauf indication contraire.
 
 Légende :
+
 - 🎯 Objectif
 - 📦 Livrables
 - ✅ Critères d'acceptation
@@ -15,6 +16,7 @@ Légende :
 🎯 Mettre en place les fondations du repo et les comptes externes.
 
 📦 Livrables
+
 - Projet Next.js 16+ créé avec App Router + TypeScript strict
 - Repo Git initialisé, branche `main` protégée
 - Compte Supabase créé + projet provisionné (région la plus proche)
@@ -25,6 +27,7 @@ Légende :
 - Fichier `.env.example` versionné (sans valeurs)
 
 ✅ Critères
+
 - `npm run dev` démarre sans erreur
 - Variables d'env documentées
 - README minimal présent
@@ -36,6 +39,7 @@ Légende :
 🎯 Configurer l'outillage de qualité de code et la structure du projet.
 
 📦 Livrables
+
 - ESLint + Prettier configurés (règles strictes)
 - `tsconfig.json` en mode strict (`strict: true`, `noUncheckedIndexedAccess: true`)
 - Path aliases (`@/*` → `src/*`)
@@ -47,6 +51,7 @@ Légende :
 - `lib/utils/cn.ts` + `format-price.ts` + `slugify.ts` + `generate-reference.ts`
 
 ✅ Critères
+
 - `npm run build` passe sans erreur
 - `npm run lint` passe
 - Pre-commit hook fonctionne
@@ -61,6 +66,7 @@ Légende :
 🎯 Schéma complet en production sur Supabase via Drizzle.
 
 📦 Livrables
+
 - Drizzle ORM installé + `drizzle.config.ts`
 - Schémas Drizzle complets dans `db/schema/` (voir `docs/schema.md`) :
   - `users`, `categories`, `products`, `delivery_options`, `orders`, `order_items`, `payments`, `cart`, `notifications`
@@ -75,6 +81,7 @@ Légende :
 - Clients Drizzle : `db/index.ts` (server) + helpers query/transaction
 
 ✅ Critères
+
 - `npx drizzle-kit push` fonctionne
 - Toutes les FK et contraintes en place
 - Seed exécutable via `npm run db:seed`
@@ -89,6 +96,7 @@ Légende :
 🎯 Sécuriser toutes les tables avec les bonnes politiques.
 
 📦 Livrables
+
 - RLS activé sur **toutes** les tables (`alter table ... enable row level security`)
 - Politiques pour `users` : SELECT/UPDATE de son propre profil
 - Politiques pour `products`, `categories`, `delivery_options` : SELECT public, INSERT/UPDATE/DELETE admin only
@@ -100,6 +108,7 @@ Légende :
 - Tests RLS via Supabase Studio en simulant des rôles
 
 ✅ Critères
+
 - Un utilisateur connecté ne peut accéder qu'à ses propres données
 - Un anonyme ne peut lire que `products`, `categories`, `delivery_options`
 - Un admin peut tout faire
@@ -114,6 +123,7 @@ Légende :
 🎯 Inscription, connexion, déconnexion, protection des routes.
 
 📦 Livrables
+
 - Clients Supabase : `lib/supabase/client.ts`, `server.ts`, `admin.ts`
 - Middleware Next.js (`middleware.ts`) pour rafraîchir la session sur chaque requête
 - Pages :
@@ -130,6 +140,7 @@ Légende :
 - Composant `UserMenu` (Header) avec état connecté/déconnecté
 
 ✅ Critères
+
 - Inscription crée bien la ligne dans `auth.users` ET `users` (trigger)
 - Connexion persiste la session après refresh
 - Déconnexion vide la session
@@ -145,6 +156,7 @@ Légende :
 🎯 Upload et gestion des médias.
 
 📦 Livrables
+
 - Buckets créés :
   - `products` (public read)
   - `categories` (public read)
@@ -157,6 +169,7 @@ Légende :
 - Conversion automatique en WebP si possible
 
 ✅ Critères
+
 - Upload depuis l'admin fonctionne
 - URLs publiques accessibles
 - Suppression nettoie bien le storage
@@ -170,6 +183,7 @@ Légende :
 🎯 CRUD complet des catégories + navigation vitrine.
 
 📦 Livrables
+
 - Server Actions `features/categories/actions/` : `createCategory`, `updateCategory`, `deleteCategory`, `toggleActive`
 - Queries `features/categories/queries/` : `getCategories`, `getCategoryBySlug`, `getActiveCategories`
 - Pages admin :
@@ -183,6 +197,7 @@ Légende :
 - Composant `CategoryNav` (header) avec catégories actives
 
 ✅ Critères
+
 - Admin peut créer/modifier/supprimer/désactiver une catégorie
 - Slug auto-généré et éditable
 - Suppression bloquée si produits associés (ou cascade soft delete)
@@ -197,6 +212,7 @@ Légende :
 🎯 CRUD complet des produits + liste/détail vitrine.
 
 📦 Livrables
+
 - Server Actions `features/products/actions/` : `createProduct`, `updateProduct`, `softDeleteProduct`, `toggleActive`, `toggleFeatured`, `updateStock`
 - Queries `features/products/queries/` : `getProducts(filters)`, `getProductBySlug`, `getFeaturedProducts`, `getProductsByCategory`
 - Pages admin :
@@ -214,6 +230,7 @@ Légende :
 - `generateMetadata` SEO complet (title, description, OG image)
 
 ✅ Critères
+
 - CRUD produits fonctionne
 - Soft delete respecté (filtre `deleted_at IS NULL`)
 - Recherche full-text fonctionnelle
@@ -229,6 +246,7 @@ Légende :
 🎯 Panier client-side persistant avec sync optionnelle.
 
 📦 Livrables
+
 - Store Zustand `stores/cart.store.ts` avec persistance `localStorage`
 - Actions : `addItem`, `removeItem`, `updateQuantity`, `clearCart`, `getSubtotal`, `getItemCount`
 - Hook `useCart()` exposant l'API
@@ -244,6 +262,7 @@ Légende :
 - Gestion du stock (bloquer ajout si `stock_quantity` insuffisant)
 
 ✅ Critères
+
 - Panier persiste après refresh
 - Panier se synchronise entre devices si utilisateur connecté
 - Ajout/suppression instantané (optimistic)
@@ -258,6 +277,7 @@ Légende :
 🎯 Options de livraison configurables par l'admin.
 
 📦 Livrables
+
 - Server Actions `features/delivery/actions/` : CRUD complet
 - Queries : `getActiveDeliveryOptions`, `getDeliveryOptionById`
 - Page admin `/admin/livraisons` (liste + CRUD)
@@ -267,6 +287,7 @@ Légende :
 - Snapshot du prix dans la commande au moment du checkout
 
 ✅ Critères
+
 - Admin peut créer/modifier/désactiver les options
 - Le sélecteur n'affiche que les options actives
 - Le prix est snapshot dans `orders.delivery_fee`
@@ -280,6 +301,7 @@ Légende :
 🎯 Token manager et wrapper API PVIT.
 
 📦 Livrables
+
 - Table `app_config` (clé/valeur) pour stocker `pvit_x_secret` + `pvit_secret_expires_at`
 - `features/payments/pvit/token-manager.ts` :
   - `getValidToken()` : retourne le token ou en demande un nouveau si expiré
@@ -292,6 +314,7 @@ Légende :
 - Logs structurés (request/response) pour debug PVIT
 
 ✅ Critères
+
 - Le cron tourne et renouvelle bien le X-Secret
 - Le client PVIT gère automatiquement la rotation du token
 - Aucune clé sensible dans le bundle client (`npm run build` + vérification)
@@ -305,6 +328,7 @@ Légende :
 🎯 Initiation paiement + webhook + fallback.
 
 📦 Livrables
+
 - Route `/api/pvit/initiate/route.ts` :
   - Valide la requête (auth + panier + livraison)
   - Crée `orders` (status: pending) + `order_items` (snapshots) + `payments` (status: pending)
@@ -326,6 +350,7 @@ Légende :
 - Gestion des cas d'erreur : timeout, paiement refusé, fraude
 
 ✅ Critères
+
 - Un paiement réussi met à jour la commande en `confirmed`
 - Un paiement échoué laisse la commande en `pending` avec possibilité de retry
 - Le webhook est idempotent (testé en rejouant le même payload)
@@ -341,6 +366,7 @@ Légende :
 🎯 Tunnel de paiement complet, mobile-first.
 
 📦 Livrables
+
 - Page `/checkout` en 3 étapes :
   1. Adresse de livraison (pré-remplie depuis `users` si connecté)
   2. Option de livraison + récap
@@ -354,6 +380,7 @@ Légende :
 - Création d'un compte « invité » optionnel (si pas connecté)
 
 ✅ Critères
+
 - Un client peut payer en moins de 5 clics depuis le panier
 - L'écran mobile est entièrement utilisable (touch targets ≥ 44px)
 - Les erreurs de paiement reviennent sur l'étape concernée sans perdre les données
@@ -367,6 +394,7 @@ Légende :
 🎯 Suivi client + gestion admin.
 
 📦 Livrables
+
 - Queries `features/orders/queries/` : `getOrderById`, `getUserOrders`, `getAllOrders(filters)`
 - Server Actions admin : `updateOrderStatus`, `cancelOrder`, `refundOrder`, `addOrderNote`
 - Pages client :
@@ -380,6 +408,7 @@ Légende :
 - Chaque changement de statut déclenche une notification FCM au client
 
 ✅ Critères
+
 - Client voit ses commandes et leur statut en temps réel (Supabase Realtime optionnel)
 - Admin peut faire évoluer les statuts dans le bon ordre uniquement
 - Statut `cancelled` réincrémente le stock
@@ -393,6 +422,7 @@ Légende :
 🎯 Push notifications web temps réel.
 
 📦 Livrables
+
 - Service worker FCM (`public/firebase-messaging-sw.js`)
 - `features/notifications/fcm/client.ts` : init Firebase, demande de permission, récupération token
 - `features/notifications/fcm/send.ts` : envoi server-side via FCM HTTP v1
@@ -408,6 +438,7 @@ Légende :
 - Page `/compte/notifications` (historique + marquer comme lu)
 
 ✅ Critères
+
 - Le client reçoit une notification après paiement réussi
 - Les notifications fonctionnent en arrière-plan (PWA installée)
 - Le centre de notifications affiche l'historique complet
@@ -421,6 +452,7 @@ Légende :
 🎯 Vue d'ensemble et analytics.
 
 📦 Livrables
+
 - Page `/admin` avec :
   - `StatsCards` : CA jour/semaine/mois, nb commandes, nb clients, panier moyen
   - `RevenueChart` : CA sur 30 jours (Recharts ou Tremor)
@@ -432,6 +464,7 @@ Légende :
 - Filtres temporels (jour, semaine, mois, custom)
 
 ✅ Critères
+
 - Le dashboard charge en < 2s
 - Les chiffres sont cohérents avec la DB
 - Mobile-friendly
@@ -445,6 +478,7 @@ Légende :
 🎯 Application installable et offline-friendly.
 
 📦 Livrables
+
 - `next-pwa` installé et configuré dans `next.config.ts` :
   ```ts
   const withPWA = require('next-pwa')({
@@ -467,7 +501,12 @@ Légende :
     "icons": [
       { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
       { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
-      { "src": "/icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+      {
+        "src": "/icons/icon-maskable.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+      }
     ]
   }
   ```
@@ -482,6 +521,7 @@ Légende :
 - Test sur iOS Safari + Android Chrome
 
 ✅ Critères
+
 - Lighthouse PWA score > 90
 - L'app est installable sur Android et iOS
 - L'app fonctionne en mode offline (navigation des pages déjà visitées)
@@ -495,6 +535,7 @@ Légende :
 🎯 Référencement optimal.
 
 📦 Livrables
+
 - `generateMetadata` sur toutes les pages publiques
 - Open Graph + Twitter Cards
 - Structured Data JSON-LD :
@@ -509,6 +550,7 @@ Légende :
 - Sitemap soumis à Google Search Console
 
 ✅ Critères
+
 - Lighthouse SEO score > 95
 - Sitemap accessible à `/sitemap.xml`
 - Les fiches produits ont des rich snippets valides (test Google)
@@ -522,6 +564,7 @@ Légende :
 🎯 Optimiser les Core Web Vitals et l'UX.
 
 📦 Livrables
+
 - Audit Lighthouse mobile : objectif > 90 sur toutes les métriques
 - Lazy loading systématique des images hors viewport
 - Skeletons / loading states sur toutes les listes
@@ -535,6 +578,7 @@ Légende :
 - Animations légères (Framer Motion sur éléments clés uniquement)
 
 ✅ Critères
+
 - LCP < 2.5s sur 4G simulé
 - CLS < 0.1
 - FID < 100ms
@@ -549,6 +593,7 @@ Légende :
 🎯 Garantir la non-régression sur les flux critiques.
 
 📦 Livrables
+
 - Vitest configuré pour les tests unitaires
   - `lib/utils/` : 100% coverage
   - Schemas Zod : tests de validation
@@ -561,6 +606,7 @@ Légende :
 - GitHub Actions CI : lint + typecheck + tests sur chaque PR
 
 ✅ Critères
+
 - Tous les tests passent en CI
 - Le flux de paiement E2E fonctionne en sandbox
 - Aucune régression sur les bugs déjà corrigés
@@ -574,6 +620,7 @@ Légende :
 🎯 Mise en production stable.
 
 📦 Livrables
+
 - Projet Vercel configuré
 - Toutes les variables d'env de production saisies
 - Cron jobs Vercel actifs (`vercel.json`) :
@@ -588,6 +635,7 @@ Légende :
 - Documentation runbook : que faire si paiements échouent, comment renvoyer une notif, etc.
 
 ✅ Critères
+
 - Première commande réelle traitée avec succès
 - Sentry capture bien les erreurs
 - Backups Supabase fonctionnels (test de restauration)
@@ -601,6 +649,7 @@ Légende :
 🎯 Itération continue basée sur l'usage réel.
 
 📦 Livrables (au fil de l'eau)
+
 - Analytics produit (Plausible ou PostHog)
 - Hotjar ou équivalent pour les heatmaps
 - A/B testing sur la page checkout (Vercel Edge Config)
@@ -626,6 +675,7 @@ P0 → P1 → P2 → P3 → P4 → P5 → P6 → P7 → P8 → P9 → P10 → P1
 ```
 
 Phases parallélisables si plusieurs développeurs :
+
 - P5 (Storage) peut démarrer en parallèle de P4 (Auth) une fois P3 fait
 - P14 (Notifications) peut démarrer dès P11 (PVIT) terminé
 - P15 (Dashboard) peut être développé en parallèle de P14

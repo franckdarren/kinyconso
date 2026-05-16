@@ -8,21 +8,21 @@ PWA monovendeur, mobile-first, SEO-friendly. **Tout le texte visible en françai
 
 ## Stack technique
 
-| Couche | Technologie |
-|---|---|
-| Framework | Next.js 16+ App Router |
-| Langage | TypeScript strict |
-| Base de données | PostgreSQL via Supabase |
-| ORM | Drizzle ORM |
-| Auth | Supabase Auth |
-| Storage | Supabase Storage |
-| UI | Tailwind CSS + shadcn/ui |
-| Validation | Zod |
-| State | Zustand |
-| Paiement | PVIT (Airtel Money, Moov Money, Visa/Mastercard) |
-| Push | Firebase Cloud Messaging (FCM) |
-| PWA | next-pwa |
-| Déploiement | Vercel |
+| Couche          | Technologie                                      |
+| --------------- | ------------------------------------------------ |
+| Framework       | Next.js 16+ App Router                           |
+| Langage         | TypeScript strict                                |
+| Base de données | PostgreSQL via Supabase                          |
+| ORM             | Drizzle ORM                                      |
+| Auth            | Supabase Auth                                    |
+| Storage         | Supabase Storage                                 |
+| UI              | Tailwind CSS + shadcn/ui                         |
+| Validation      | Zod                                              |
+| State           | Zustand                                          |
+| Paiement        | PVIT (Airtel Money, Moov Money, Visa/Mastercard) |
+| Push            | Firebase Cloud Messaging (FCM)                   |
+| PWA             | next-pwa                                         |
+| Déploiement     | Vercel                                           |
 
 ---
 
@@ -75,6 +75,7 @@ src/
 ## Conventions de code
 
 ### Nommage
+
 ```
 Composants      PascalCase    → ProductCard.tsx
 Hooks           camelCase     → useCart.ts
@@ -84,6 +85,7 @@ Constantes      UPPER_SNAKE   → MAX_CART_ITEMS
 ```
 
 ### Server Actions — pattern obligatoire
+
 ```ts
 'use server'
 export async function createProduct(data: CreateProductInput) {
@@ -95,13 +97,13 @@ export async function createProduct(data: CreateProductInput) {
 ```
 
 ### Retour des actions — toujours ce pattern
+
 ```ts
-type ActionResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string }
+type ActionResult<T> = { success: true; data: T } | { success: false; error: string }
 ```
 
 ### Validation Zod — par feature
+
 ```ts
 // features/products/schemas/product.schema.ts
 export const createProductSchema = z.object({
@@ -123,26 +125,28 @@ export const createProductSchema = z.object({
 - Formatage prix : `new Intl.NumberFormat('fr-FR').format(price) + ' FCFA'`
 
 ### Pages vitrine
-| Route | Description |
-|---|---|
-| `/` | Hero, produits en vedette, catégories |
-| `/produits` | Catalogue, filtres, pagination |
-| `/produits/[slug]` | Fiche produit |
-| `/categories/[slug]` | Produits par catégorie |
-| `/panier` | Panier |
-| `/checkout` | Tunnel paiement |
-| `/commandes/[id]` | Confirmation et suivi |
-| `/auth/connexion` · `/auth/inscription` | Auth |
+
+| Route                                   | Description                           |
+| --------------------------------------- | ------------------------------------- |
+| `/`                                     | Hero, produits en vedette, catégories |
+| `/produits`                             | Catalogue, filtres, pagination        |
+| `/produits/[slug]`                      | Fiche produit                         |
+| `/categories/[slug]`                    | Produits par catégorie                |
+| `/panier`                               | Panier                                |
+| `/checkout`                             | Tunnel paiement                       |
+| `/commandes/[id]`                       | Confirmation et suivi                 |
+| `/auth/connexion` · `/auth/inscription` | Auth                                  |
 
 ### Pages admin
-| Route | Description |
-|---|---|
-| `/admin` | Dashboard stats |
-| `/admin/produits` | CRUD produits |
-| `/admin/commandes` | Liste + détail |
+
+| Route               | Description        |
+| ------------------- | ------------------ |
+| `/admin`            | Dashboard stats    |
+| `/admin/produits`   | CRUD produits      |
+| `/admin/commandes`  | Liste + détail     |
 | `/admin/categories` | Gestion catégories |
-| `/admin/clients` | Liste clients |
-| `/admin/livraisons` | Options livraison |
+| `/admin/clients`    | Liste clients      |
+| `/admin/livraisons` | Options livraison  |
 
 ---
 
@@ -183,6 +187,7 @@ CRON_SECRET=                      # SERVER ONLY
 - `merchant_reference_id` généré avec `crypto.randomUUID()` côté serveur uniquement
 
 ### RLS minimales
+
 ```sql
 -- users       : lecture/modification de son propre profil uniquement
 -- orders      : un client ne voit que ses propres commandes

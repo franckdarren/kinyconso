@@ -18,11 +18,11 @@ PVIT → POST /api/pvit/callback (Webhook)
 
 ## Opérateurs supportés
 
-| Opérateur       | Code PVIT          |
-|-----------------|--------------------|
-| Airtel Money    | `AIRTEL_MONEY`     |
-| Moov Money      | `MOOV_MONEY`       |
-| Visa/Mastercard | `VISA_MASTERCARD`  |
+| Opérateur       | Code PVIT         |
+| --------------- | ----------------- |
+| Airtel Money    | `AIRTEL_MONEY`    |
+| Moov Money      | `MOOV_MONEY`      |
+| Visa/Mastercard | `VISA_MASTERCARD` |
 
 ## Gestion de la clé X-Secret
 
@@ -36,7 +36,7 @@ PVIT → POST /api/pvit/callback (Webhook)
 ```ts
 // webhook-handler.ts
 const existing = await db.query.payments.findFirst({
-  where: eq(payments.merchantReferenceId, payload.merchantReferenceId)
+  where: eq(payments.merchantReferenceId, payload.merchantReferenceId),
 })
 if (existing?.status !== 'pending') {
   return { transactionId: payload.transactionId, responseCode: payload.code }

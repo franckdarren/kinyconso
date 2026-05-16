@@ -1,6 +1,7 @@
 # Schéma de base de données (Drizzle ORM)
 
 ## Conventions
+
 - Clé primaire `uuid` (`gen_random_uuid()`) sur toutes les tables
 - `created_at` et `updated_at` sur toutes les tables
 - Colonnes en `snake_case`
@@ -10,6 +11,7 @@
 ---
 
 ## `users` (extension de auth.users Supabase)
+
 ```ts
 id: uuid (FK → auth.users.id)
 full_name: text
@@ -23,6 +25,7 @@ updated_at: timestamp
 ```
 
 ## `categories`
+
 ```ts
 id: uuid
 name: text (unique)
@@ -37,6 +40,7 @@ updated_at: timestamp
 ```
 
 ## `products`
+
 ```ts
 id: uuid
 name: text
@@ -56,6 +60,7 @@ updated_at: timestamp
 ```
 
 ## `delivery_options`
+
 ```ts
 id: uuid
 name: text                   -- ex: "Livraison standard", "Livraison express"
@@ -69,6 +74,7 @@ updated_at: timestamp
 ```
 
 ## `orders`
+
 ```ts
 id: uuid
 order_number: text (unique)  -- ex: CMD-2024-00001
@@ -86,6 +92,7 @@ updated_at: timestamp
 ```
 
 ## `order_items`
+
 ```ts
 id: uuid
 order_id: uuid (FK → orders.id)
@@ -99,6 +106,7 @@ created_at: timestamp
 ```
 
 ## `payments`
+
 ```ts
 id: uuid
 order_id: uuid (FK → orders.id, unique)
@@ -117,6 +125,7 @@ updated_at: timestamp
 ```
 
 ## `cart`
+
 ```ts
 id: uuid
 user_id: uuid (FK → users.id, unique)
@@ -126,6 +135,7 @@ updated_at: timestamp
 ```
 
 ## `notifications`
+
 ```ts
 id: uuid
 user_id: uuid (FK → users.id)
