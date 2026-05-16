@@ -8,6 +8,7 @@ Ce dossier contient les scripts SQL à exécuter **après** les migrations Drizz
 | ----- | ----------------- | ----- | ---------------------------------------------------------------------------------------- |
 | 1     | `01_triggers.sql` | 2     | `set_updated_at()`, sync `auth.users → public.users`, `set_order_number()`, `is_admin()` |
 | 2     | `02_rls.sql`      | 3     | Activation RLS + politiques par table + anti-escalade de rôle                            |
+| 3     | `03_storage.sql`  | 5     | Buckets Storage (`products`, `categories`, `avatars`) + politiques                       |
 
 ## Vue d'ensemble des politiques RLS
 
