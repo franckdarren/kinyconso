@@ -8,8 +8,9 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
 
-import { uploadFile, deleteFiles, publicUrlToPath } from '../actions'
+import { uploadFile, deleteFiles } from '../actions'
 import { compressImage } from '../utils/compress-image'
+import { publicUrlToPath } from '../utils/public-url'
 import { validateImageFile } from '../utils/validate-file'
 import { ACCEPTED_IMAGE_EXTENSIONS, MAX_FILE_SIZE_MB, type StorageBucket } from '../constants'
 

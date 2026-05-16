@@ -1,2 +1,2 @@
 export { uploadFile } from './upload'
-export { deleteFiles, publicUrlToPath } from './delete'
+export { deleteFiles } from './delete'

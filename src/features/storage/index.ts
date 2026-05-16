@@ -1,5 +1,6 @@
 export { ImageUploader, type ImageUploaderProps } from './components/image-uploader'
-export { uploadFile, deleteFiles, publicUrlToPath } from './actions'
+export { uploadFile, deleteFiles } from './actions'
+export { publicUrlToPath } from './utils/public-url'
 export {
   ACCEPTED_IMAGE_TYPES,
   ACCEPTED_IMAGE_EXTENSIONS,
