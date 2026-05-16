@@ -1,7 +1,8 @@
 import Link from 'next/link'
-import { ShoppingCart, User } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { UserMenu } from '@/components/shared/user-menu'
 import { siteConfig } from '@/config/site'
 
 export function Header() {
@@ -21,12 +22,8 @@ export function Header() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="icon" aria-label="Mon compte">
-            <Link href="/auth/connexion">
-              <User className="h-5 w-5" />
-            </Link>
-          </Button>
+        <div className="flex items-center gap-1">
+          <UserMenu />
           <Button asChild variant="ghost" size="icon" aria-label="Panier">
             <Link href="/panier">
               <ShoppingCart className="h-5 w-5" />
