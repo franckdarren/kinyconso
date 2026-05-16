@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KinyConso
 
-## Getting Started
+PWA e-commerce mobile-first pour le Gabon. Paiement Mobile Money (Airtel, Moov) et carte bancaire via PVIT. **Devise : FCFA uniquement. Interface en français.**
 
-First, run the development server:
+## Stack
+
+- **Framework** : Next.js 16 (App Router) + React 19 + TypeScript strict
+- **UI** : Tailwind CSS v4 + shadcn/ui
+- **Base de données** : PostgreSQL (Supabase) + Drizzle ORM
+- **Auth & Storage** : Supabase
+- **Validation** : Zod
+- **State** : Zustand
+- **Paiement** : PVIT
+- **Push** : Firebase Cloud Messaging
+- **Déploiement** : Vercel
+
+## Prérequis
+
+- Node.js 20+
+- npm 10+
+- Un compte Supabase, PVIT et Firebase (voir `docs/`)
+
+## Démarrage rapide
 
 ```bash
+# 1. Installer les dépendances
+npm install
+
+# 2. Configurer l'environnement
+cp .env.example .env.local
+# Puis remplir les valeurs dans .env.local
+
+# 3. Démarrer le serveur de développement
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts disponibles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script                 | Description                                    |
+| ---------------------- | ---------------------------------------------- |
+| `npm run dev`          | Lance le serveur de développement              |
+| `npm run build`        | Build de production                            |
+| `npm run start`        | Démarre le serveur de production (après build) |
+| `npm run lint`         | Vérifie le linting                             |
+| `npm run lint:fix`     | Corrige automatiquement le linting             |
+| `npm run format`       | Formate tous les fichiers avec Prettier        |
+| `npm run format:check` | Vérifie le formatage sans modifier             |
+| `npm run typecheck`    | Vérifie les types TypeScript                   |
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/          # Routes Next.js (App Router)
+├── components/   # Composants partagés + UI shadcn
+├── features/     # Logique métier par domaine
+├── lib/          # Clients (Supabase) + utils
+├── db/           # Schémas Drizzle + migrations
+├── stores/       # Stores Zustand
+├── hooks/        # Hooks React
+├── types/        # Types globaux
+└── config/       # Configuration (site, PVIT, FCM)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Voir [`CLAUDE.md`](CLAUDE.md) pour les conventions complètes.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Documentation
 
-## Deploy on Vercel
+- [`CLAUDE.md`](CLAUDE.md) — Vue d'ensemble du projet
+- [`docs/schema.md`](docs/schema.md) — Schéma de la base de données
+- [`docs/pvit.md`](docs/pvit.md) — Intégration PVIT
+- [`docs/implementation-order.md`](docs/implementation-order.md) — Roadmap d'implémentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Règles de sécurité
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Jamais** de clé secrète (`SUPABASE_SERVICE_ROLE_KEY`, `PVIT_API_PASSWORD`, `FIREBASE_SERVER_KEY`) côté client.
+- **RLS activé** sur toutes les tables Supabase.
+- Toutes les routes `/api/pvit/*` sont server-side uniquement.
+- Les `merchant_reference_id` sont générés avec `crypto.randomUUID()` côté serveur.

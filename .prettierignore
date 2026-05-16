@@ -1,0 +1,10 @@
+.next
+out
+build
+node_modules
+public
+*.lock
+*.log
+.env*
+coverage
+src/db/migrations

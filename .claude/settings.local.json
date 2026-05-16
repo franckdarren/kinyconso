@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"c:/Users/HP USERS/.claude/projects/c--Users-HP-USERS-Downloads-kinyconso/memory/\" 2>&1 || echo \"EMPTY\")",
+      "Read(//c/Users/HP USERS/.claude/projects/c--Users-HP-USERS-Downloads-kinyconso/memory/**)",
+      "Bash(mkdir -p \"c:/Users/HP USERS/Downloads/kinyconso/src/app\")",
+      "Bash(mv \"c:/Users/HP USERS/Downloads/kinyconso/app/layout.tsx\" \"c:/Users/HP USERS/Downloads/kinyconso/src/app/layout.tsx\")",
+      "Bash(mv \"c:/Users/HP USERS/Downloads/kinyconso/app/page.tsx\" \"c:/Users/HP USERS/Downloads/kinyconso/src/app/page.tsx\")",
+      "Bash(mv \"c:/Users/HP USERS/Downloads/kinyconso/app/globals.css\" \"c:/Users/HP USERS/Downloads/kinyconso/src/app/globals.css\")",
+      "Bash(mv \"c:/Users/HP USERS/Downloads/kinyconso/app/favicon.ico\" \"c:/Users/HP USERS/Downloads/kinyconso/src/app/favicon.ico\")",
+      "Bash(npm install *)",
+      "Bash(npm view *)",
+      "Bash(npm run *)"
+    ]
+  }
+}
