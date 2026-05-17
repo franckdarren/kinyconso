@@ -79,6 +79,7 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 const nextConfig: NextConfig = {
   compress: true,
+  turbopack: {},
   images: {
     remotePatterns: [
       {
