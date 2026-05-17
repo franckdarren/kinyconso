@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { LayoutDashboard, Package, ShoppingBag, Tag, Truck, Users } from 'lucide-react'
+import { Activity, LayoutDashboard, Package, ShoppingBag, Tag, Truck, Users } from 'lucide-react'
 
 import { getCurrentUser } from '@/features/auth/queries/get-current-user'
 
@@ -11,6 +11,7 @@ const NAV = [
   { href: '/admin/commandes', label: 'Commandes', icon: ShoppingBag },
   { href: '/admin/livraisons', label: 'Livraisons', icon: Truck },
   { href: '/admin/clients', label: 'Clients', icon: Users },
+  { href: '/admin/health', label: 'État des services', icon: Activity },
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

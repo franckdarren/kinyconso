@@ -1,5 +1,6 @@
 import withPWAInit from '@ducanh2912/next-pwa'
 import bundleAnalyzer from '@next/bundle-analyzer'
+import { withSentryConfig } from '@sentry/nextjs'
 import type { NextConfig } from 'next'
 
 const withBundleAnalyzer = bundleAnalyzer({
@@ -92,4 +93,14 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withBundleAnalyzer(withPWA(nextConfig))
+const baseConfig = withBundleAnalyzer(withPWA(nextConfig))
+
+export default withSentryConfig(baseConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  silent: true,
+  widenClientFileUpload: true,
+  hideSourceMaps: true,
+  disableLogger: true,
+  automaticVercelMonitors: true,
+})
