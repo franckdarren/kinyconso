@@ -60,9 +60,10 @@ export function ProductDetail({ product }: ProductDetailProps) {
         <div className="mt-4">
           <AddToCartButton
             productId={product.id}
+            productSlug={product.slug}
             productName={product.name}
             price={product.price}
-            image={product.images[0]}
+            image={product.images[0] ?? null}
             stockQuantity={product.stockQuantity}
           />
         </div>

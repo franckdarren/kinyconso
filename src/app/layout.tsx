@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 
 import { Header } from '@/components/shared/header'
 import { Footer } from '@/components/shared/footer'
+import { CartProviders } from '@/components/shared/cart-providers'
 import { Toaster } from '@/components/ui/toaster'
 import { siteConfig } from '@/config/site'
 
@@ -86,6 +87,7 @@ export default function RootLayout({
         <Header />
         <main className="flex flex-1 flex-col">{children}</main>
         <Footer />
+        <CartProviders />
         <Toaster />
       </body>
     </html>
