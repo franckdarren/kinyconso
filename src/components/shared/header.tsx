@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { UserMenu } from '@/components/shared/user-menu'
 import { CategoryNav } from '@/features/categories/components/category-nav'
 import { CartBadge } from '@/features/cart/components/cart-badge'
+import { NotificationCenterServer } from '@/features/notifications/components/notification-center-server'
 import { siteConfig } from '@/config/site'
 
 export function Header() {
@@ -24,6 +25,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-1">
+          <NotificationCenterServer />
           <UserMenu />
           <CartBadge />
         </div>
