@@ -10,7 +10,8 @@
       "Bash(mv \"c:/Users/HP USERS/Downloads/kinyconso/app/favicon.ico\" \"c:/Users/HP USERS/Downloads/kinyconso/src/app/favicon.ico\")",
       "Bash(npm install *)",
       "Bash(npm view *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\HP USERS\\\\Downloads\\\\kinyconso\\\\src\\\\app\" -Force | Select-Object Name, @{Name='Type';Expression={if\\($_.PSIsContainer\\){'Dir'}else{'File'}}} | Format-Table -AutoSize)"
     ]
   }
 }

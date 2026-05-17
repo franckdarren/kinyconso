@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Header } from '@/components/shared/header'
 import { Footer } from '@/components/shared/footer'
 import { CartProviders } from '@/components/shared/cart-providers'
+import { InstallPrompt } from '@/components/shared/install-prompt'
 import { Toaster } from '@/components/ui/toaster'
 import { siteConfig } from '@/config/site'
 
@@ -62,14 +63,19 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/icon', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-icon', sizes: '180x180', type: 'image/png' }],
+    shortcut: '/icon',
   },
 }
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+    { media: '(prefers-color-scheme: light)', color: '#16a34a' },
+    { media: '(prefers-color-scheme: dark)', color: '#15803d' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -89,6 +95,7 @@ export default function RootLayout({
         <Footer />
         <CartProviders />
         <Toaster />
+        <InstallPrompt />
       </body>
     </html>
   )
