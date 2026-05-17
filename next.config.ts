@@ -1,5 +1,10 @@
 import withPWAInit from '@ducanh2912/next-pwa'
+import bundleAnalyzer from '@next/bundle-analyzer'
 import type { NextConfig } from 'next'
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
 
 const withPWA = withPWAInit({
   dest: 'public',
@@ -73,6 +78,7 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
   : '*.supabase.co'
 
 const nextConfig: NextConfig = {
+  compress: true,
   images: {
     remotePatterns: [
       {
@@ -85,4 +91,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withPWA(nextConfig)
+export default withBundleAnalyzer(withPWA(nextConfig))

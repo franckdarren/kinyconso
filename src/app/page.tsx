@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ShoppingBag, Sparkles, Truck } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { HeroAnimation } from '@/components/shared/hero-animation'
 import { CategoryCard } from '@/features/categories/components/category-card'
 import { ProductGrid } from '@/features/products/components/product-grid'
 import { getActiveCategories } from '@/features/categories/queries'
@@ -50,27 +51,29 @@ export default async function HomePage() {
     <div className="flex flex-1 flex-col">
       {/* Hero */}
       <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="border-border bg-muted text-muted-foreground inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium">
-            <Sparkles className="text-primary h-3.5 w-3.5" />
-            Bienvenue sur {siteConfig.name}
-          </p>
-          <h1 className="text-foreground mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
-            La boutique en ligne nouvelle génération au Gabon
-          </h1>
-          <p className="text-muted-foreground mt-4 text-lg">
-            Payez en toute simplicité avec Airtel Money, Moov Money ou par carte bancaire. Livraison
-            rapide partout à Libreville et au-delà.
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg">
-              <Link href="/produits">Découvrir les produits</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/categories">Voir les catégories</Link>
-            </Button>
+        <HeroAnimation>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="border-border bg-muted text-muted-foreground inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium">
+              <Sparkles className="text-primary h-3.5 w-3.5" />
+              Bienvenue sur {siteConfig.name}
+            </p>
+            <h1 className="text-foreground mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
+              La boutique en ligne nouvelle génération au Gabon
+            </h1>
+            <p className="text-muted-foreground mt-4 text-lg">
+              Payez en toute simplicité avec Airtel Money, Moov Money ou par carte bancaire.
+              Livraison rapide partout à Libreville et au-delà.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button asChild size="lg">
+                <Link href="/produits">Découvrir les produits</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/categories">Voir les catégories</Link>
+              </Button>
+            </div>
           </div>
-        </div>
+        </HeroAnimation>
       </section>
 
       {/* Avantages */}
