@@ -45,8 +45,8 @@ export default async function AdminDeliveriesPage() {
           </p>
         </div>
       ) : (
-        <div className="border-border overflow-hidden rounded-lg border">
-          <table className="w-full text-sm">
+        <div className="border-border overflow-x-auto rounded-lg border">
+          <table className="w-full min-w-[480px] text-sm">
             <thead className="bg-muted/50 text-muted-foreground text-left">
               <tr>
                 <th className="px-4 py-3 font-medium">Nom</th>
@@ -70,7 +70,7 @@ export default async function AdminDeliveriesPage() {
                   </td>
                   <td className="px-4 py-2 font-medium">
                     {opt.price === 0 ? (
-                      <span className="text-green-700 dark:text-green-300">Gratuit</span>
+                      <span className="text-green-700">Gratuit</span>
                     ) : (
                       formatPrice(opt.price)
                     )}
@@ -83,7 +83,7 @@ export default async function AdminDeliveriesPage() {
                     <span
                       className={
                         opt.isActive
-                          ? 'inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                          ? 'inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700'
                           : 'bg-muted text-muted-foreground inline-flex rounded-full px-2 py-0.5 text-xs font-medium'
                       }
                     >

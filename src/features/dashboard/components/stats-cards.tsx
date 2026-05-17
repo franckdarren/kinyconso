@@ -43,7 +43,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {cards.map((card) => (
         <div key={card.label} className="bg-card border-border rounded-lg border p-4 shadow-sm">
           <div className="flex items-center justify-between gap-2">

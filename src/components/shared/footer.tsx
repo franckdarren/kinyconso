@@ -7,7 +7,7 @@ export function Footer() {
 
   return (
     <footer className="border-border bg-muted/40 mt-16 border-t">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 md:grid-cols-3">
         <div>
           <p className="text-primary text-lg font-semibold">{siteConfig.name}</p>
           <p className="text-muted-foreground mt-2 text-sm">{siteConfig.description}</p>

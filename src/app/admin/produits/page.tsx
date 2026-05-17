@@ -61,8 +61,8 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
         </div>
       ) : (
         <>
-          <div className="border-border overflow-hidden rounded-lg border">
-            <table className="w-full text-sm">
+          <div className="border-border overflow-x-auto rounded-lg border">
+            <table className="w-full min-w-[640px] text-sm">
               <thead className="bg-muted/50 text-muted-foreground text-left">
                 <tr>
                   <th className="w-16 px-4 py-3"></th>
@@ -98,7 +98,7 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
                       <span
                         className={
                           p.isActive
-                            ? 'inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                            ? 'bg-accent text-accent-foreground inline-flex rounded-full px-2 py-0.5 text-xs font-medium'
                             : 'bg-muted text-muted-foreground inline-flex rounded-full px-2 py-0.5 text-xs font-medium'
                         }
                       >

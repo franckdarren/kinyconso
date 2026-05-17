@@ -109,10 +109,7 @@ export function PaymentPending({
   if (status === 'success') {
     return (
       <div className="bg-card border-border space-y-3 rounded-lg border p-8 text-center shadow-sm">
-        <CheckCircle2
-          className="mx-auto h-12 w-12 text-green-600 dark:text-green-400"
-          aria-hidden
-        />
+        <CheckCircle2 className="text-primary mx-auto h-12 w-12" aria-hidden />
         <h2 className="text-lg font-semibold">Paiement confirmé</h2>
         <p className="text-muted-foreground text-sm">
           Redirection vers votre commande {orderNumber}…

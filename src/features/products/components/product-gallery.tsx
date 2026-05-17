@@ -35,7 +35,7 @@ export function ProductGallery({ images, alt }: ProductGalleryProps) {
       </div>
 
       {safe.length > 1 && (
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
           {safe.map((src, idx) => (
             <button
               key={src}

@@ -34,9 +34,9 @@ function StatusIcon({ status }: { status: ServiceStatus }) {
 
 function StatusBadge({ status }: { status: ServiceStatus }) {
   const classes = {
-    ok: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-    degraded: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
-    down: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+    ok: 'bg-green-100 text-green-800',
+    degraded: 'bg-amber-100 text-amber-800',
+    down: 'bg-red-100 text-red-800',
   }
   const labels = { ok: 'Opérationnel', degraded: 'Dégradé', down: 'Hors service' }
 

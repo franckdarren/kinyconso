@@ -35,14 +35,14 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </Link>
         )}
 
-        <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{product.name}</h1>
 
         <PriceTag price={product.price} compareAtPrice={product.compareAtPrice} size="lg" />
 
         <p
           className={
             product.stockQuantity > 0
-              ? 'text-sm font-medium text-green-600 dark:text-green-400'
+              ? 'text-primary text-sm font-medium'
               : 'text-destructive text-sm font-medium'
           }
         >
