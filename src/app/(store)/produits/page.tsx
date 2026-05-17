@@ -9,7 +9,16 @@ import { getProducts } from '@/features/products/queries'
 export const metadata: Metadata = {
   title: 'Tous les produits',
   description: 'Catalogue complet KinyConso : alimentation, boissons, hygiène, maison et plus.',
-  alternates: { canonical: '/produits' },
+  alternates: {
+    canonical: '/produits',
+    languages: { fr: '/produits' },
+  },
+  openGraph: {
+    title: 'Tous les produits — KinyConso',
+    description: 'Catalogue complet KinyConso : alimentation, boissons, hygiène, maison et plus.',
+    type: 'website',
+    url: '/produits',
+  },
 }
 
 export const dynamic = 'force-dynamic'

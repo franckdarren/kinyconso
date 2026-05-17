@@ -30,7 +30,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: product.name,
     description,
-    alternates: { canonical: `/produits/${product.slug}` },
+    alternates: {
+      canonical: `/produits/${product.slug}`,
+      languages: { fr: `/produits/${product.slug}` },
+    },
     openGraph: {
       title: product.name,
       description,
@@ -51,6 +54,33 @@ export default async function ProductDetailPage({ params }: PageProps) {
     .then((rows) => rows.filter((r) => r.slug !== product.slug).slice(0, 4))
     .catch(() => [])
 
+  const breadcrumbItems: Array<{ '@type': string; position: number; name: string; item: string }> =
+    [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteConfig.url },
+      { '@type': 'ListItem', position: 2, name: 'Produits', item: `${siteConfig.url}/produits` },
+    ]
+  if (product.categorySlug && product.categoryName) {
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 3,
+      name: product.categoryName,
+      item: `${siteConfig.url}/categories/${product.categorySlug}`,
+    })
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 4,
+      name: product.name,
+      item: `${siteConfig.url}/produits/${product.slug}`,
+    })
+  } else {
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 3,
+      name: product.name,
+      item: `${siteConfig.url}/produits/${product.slug}`,
+    })
+  }
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -66,6 +96,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
         product.stockQuantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       url: `${siteConfig.url}/produits/${product.slug}`,
     },
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems,
   }
 
   return (
@@ -106,6 +142,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
     </div>
   )

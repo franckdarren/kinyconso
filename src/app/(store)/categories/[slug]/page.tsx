@@ -6,6 +6,7 @@ import { Pagination } from '@/features/products/components/pagination'
 import { ProductGrid } from '@/features/products/components/product-grid'
 import { getCategoryBySlug } from '@/features/categories/queries'
 import { getProducts } from '@/features/products/queries'
+import { siteConfig } from '@/config/site'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,10 +20,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const category = await getCategoryBySlug(slug).catch(() => null)
   if (!category) return { title: 'Catégorie introuvable' }
 
+  const description =
+    category.description ?? `Découvrez les produits de la catégorie ${category.name} sur KinyConso.`
+
   return {
     title: category.name,
-    description: category.description ?? `Découvrez les produits de la catégorie ${category.name}`,
-    alternates: { canonical: `/categories/${category.slug}` },
+    description,
+    alternates: {
+      canonical: `/categories/${category.slug}`,
+      languages: { fr: `/categories/${category.slug}` },
+    },
+    openGraph: {
+      title: category.name,
+      description,
+      type: 'website',
+      url: `/categories/${category.slug}`,
+      images: category.imageUrl
+        ? [{ url: category.imageUrl, width: 1200, height: 630, alt: category.name }]
+        : [],
+    },
   }
 }
 
@@ -76,6 +92,31 @@ export default async function CategoryDetailPage({ params, searchParams }: PageP
         searchParams={sp}
         page={list.page}
         totalPages={list.totalPages}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteConfig.url },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Catégories',
+                item: `${siteConfig.url}/categories`,
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: category.name,
+                item: `${siteConfig.url}/categories/${category.slug}`,
+              },
+            ],
+          }),
+        }}
       />
     </div>
   )

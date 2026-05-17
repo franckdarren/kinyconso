@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ShoppingBag, Sparkles, Truck } from 'lucide-react'
 
@@ -9,6 +10,35 @@ import { getFeaturedProducts } from '@/features/products/queries'
 import { siteConfig } from '@/config/site'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+    languages: { fr: '/' },
+  },
+  openGraph: {
+    type: 'website',
+    url: siteConfig.url,
+  },
+}
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteConfig.name,
+  url: siteConfig.url,
+  logo: `${siteConfig.url}/icons/icon-512.png`,
+  contactPoint: siteConfig.contact.email
+    ? [
+        {
+          '@type': 'ContactPoint',
+          email: siteConfig.contact.email,
+          contactType: 'customer service',
+        },
+      ]
+    : undefined,
+  sameAs: [siteConfig.links.facebook, siteConfig.links.instagram].filter(Boolean),
+}
 
 export default async function HomePage() {
   const [featured, categories] = await Promise.all([
@@ -93,6 +123,11 @@ export default async function HomePage() {
           prioritizeFirst
         />
       </section>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
     </div>
   )
 }
