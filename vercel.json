@@ -1,13 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "crons": [
-    // {
-    //   "path": "/api/cron/pvit-token",
-    //   "schedule": "*/50 * * * *"
-    // },
-    // {
-    //   "path": "/api/cron/cleanup-pending-orders",
-    //   "schedule": "0 * * * *"
-    // }
-  ]
+  "crons": []
 }
