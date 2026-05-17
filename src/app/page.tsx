@@ -2,12 +2,24 @@ import Link from 'next/link'
 import { ShoppingBag, Sparkles, Truck } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { CategoryCard } from '@/features/categories/components/category-card'
+import { ProductGrid } from '@/features/products/components/product-grid'
+import { getActiveCategories } from '@/features/categories/queries'
+import { getFeaturedProducts } from '@/features/products/queries'
 import { siteConfig } from '@/config/site'
 
-export default function HomePage() {
+export const dynamic = 'force-dynamic'
+
+export default async function HomePage() {
+  const [featured, categories] = await Promise.all([
+    getFeaturedProducts(8).catch(() => []),
+    getActiveCategories().catch(() => []),
+  ])
+
   return (
     <div className="flex flex-1 flex-col">
-      <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+      {/* Hero */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <p className="border-border bg-muted text-muted-foreground inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium">
             <Sparkles className="text-primary h-3.5 w-3.5" />
@@ -31,40 +43,73 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 pb-16 sm:grid-cols-3 sm:px-6">
-        <FeatureCard
+      {/* Avantages */}
+      <section className="mx-auto grid w-full max-w-6xl gap-4 px-4 pb-12 sm:grid-cols-3 sm:px-6">
+        <Feature
           icon={<ShoppingBag className="text-primary h-5 w-5" />}
           title="Catalogue varié"
-          description="Une sélection de produits de qualité, mise à jour régulièrement."
+          description="Une sélection mise à jour régulièrement."
         />
-        <FeatureCard
+        <Feature
           icon={<Truck className="text-primary h-5 w-5" />}
           title="Livraison rapide"
-          description="Options de livraison configurables et délais clairs au moment du paiement."
+          description="Options claires et délais affichés au paiement."
         />
-        <FeatureCard
+        <Feature
           icon={<Sparkles className="text-primary h-5 w-5" />}
           title="Paiement sécurisé"
-          description="Mobile Money et carte bancaire via PVIT. Pas de stockage de données sensibles."
+          description="Mobile Money et carte bancaire via PVIT."
+        />
+      </section>
+
+      {/* Catégories */}
+      {categories.length > 0 && (
+        <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+          <div className="mb-6 flex items-baseline justify-between">
+            <h2 className="text-2xl font-bold tracking-tight">Catégories</h2>
+            <Link href="/categories" className="text-primary text-sm font-medium hover:underline">
+              Tout voir
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {categories.slice(0, 6).map((cat) => (
+              <CategoryCard key={cat.id} category={cat} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Produits vedette */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+        <div className="mb-6 flex items-baseline justify-between">
+          <h2 className="text-2xl font-bold tracking-tight">Nos coups de cœur</h2>
+          <Link href="/produits" className="text-primary text-sm font-medium hover:underline">
+            Tout voir
+          </Link>
+        </div>
+        <ProductGrid
+          products={featured}
+          emptyLabel="Aucun produit en vedette pour le moment."
+          prioritizeFirst
         />
       </section>
     </div>
   )
 }
 
-interface FeatureCardProps {
+interface FeatureProps {
   icon: React.ReactNode
   title: string
   description: string
 }
 
-function FeatureCard({ icon, title, description }: FeatureCardProps) {
+function Feature({ icon, title, description }: FeatureProps) {
   return (
-    <div className="border-border bg-card rounded-lg border p-6 shadow-sm">
+    <div className="bg-card border-border rounded-lg border p-5 shadow-sm">
       <div className="bg-primary/10 inline-flex h-10 w-10 items-center justify-center rounded-md">
         {icon}
       </div>
-      <h2 className="text-card-foreground mt-4 text-base font-semibold">{title}</h2>
+      <h3 className="text-card-foreground mt-4 text-base font-semibold">{title}</h3>
       <p className="text-muted-foreground mt-1 text-sm">{description}</p>
     </div>
   )
