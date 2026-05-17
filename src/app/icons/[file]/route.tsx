@@ -1,8 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { type NextRequest } from 'next/server'
 
-export const runtime = 'edge'
-
 const PRIMARY = '#16a34a'
 const DARK = '#15803d'
 
