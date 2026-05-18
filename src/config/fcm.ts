@@ -46,18 +46,36 @@ export interface FcmServerEnv {
  */
 export function getFcmServerEnv(): FcmServerEnv {
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL
-  const rawKey = process.env.FIREBASE_PRIVATE_KEY
+  if (!projectId) throw new Error('Variable FCM manquante : NEXT_PUBLIC_FIREBASE_PROJECT_ID')
 
-  if (!projectId || !clientEmail || !rawKey) {
-    throw new Error(
-      'Variables FCM manquantes : NEXT_PUBLIC_FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL et FIREBASE_PRIVATE_KEY sont requises.',
-    )
+  const serviceAccountRaw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
+  if (serviceAccountRaw) {
+    try {
+      const sa = JSON.parse(serviceAccountRaw) as {
+        client_email?: string
+        private_key?: string
+        project_id?: string
+      }
+      if (sa.client_email && sa.private_key) {
+        return {
+          projectId: sa.project_id ?? projectId,
+          clientEmail: sa.client_email,
+          privateKey: sa.private_key.replace(/\\n/g, '\n'),
+        }
+      }
+    } catch {
+      // fall through to individual vars
+    }
   }
 
-  const privateKey = rawKey.replace(/\\n/g, '\n')
-
-  return { projectId, clientEmail, privateKey }
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL
+  const rawKey = process.env.FIREBASE_PRIVATE_KEY
+  if (!clientEmail || !rawKey) {
+    throw new Error(
+      'Variables FCM manquantes : définir FIREBASE_SERVICE_ACCOUNT_KEY (JSON) ou FIREBASE_CLIENT_EMAIL + FIREBASE_PRIVATE_KEY.',
+    )
+  }
+  return { projectId, clientEmail, privateKey: rawKey.replace(/\\n/g, '\n') }
 }
 
 export const FCM_HTTP_V1_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging'
