@@ -84,7 +84,7 @@ export function AdminSidebar({ user, isOpen, onClose }: AdminSidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
+      <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
         <div className="space-y-5">
           {NAV_GROUPS.map((group) => (
             <div key={group.label}>
