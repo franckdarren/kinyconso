@@ -48,6 +48,7 @@ export async function processPvitCallback(
       id: payments.id,
       orderId: payments.orderId,
       status: payments.status,
+      amount: payments.amount,
     })
     .from(payments)
     .where(eq(payments.merchantReferenceId, payload.merchantReferenceId))
@@ -89,6 +90,35 @@ export async function processPvitCallback(
       merchantReferenceId: payload.merchantReferenceId,
     })
     return { handled: true, status: 'pending', idempotent: false }
+  }
+
+  // Vérification du montant : un SUCCESS dont le montant ne correspond pas au
+  // montant attendu (sous-paiement, divergence) ne doit JAMAIS confirmer la
+  // commande. On marque le paiement `failed`, la commande reste `pending`
+  // (sera nettoyée par le cron / investiguée manuellement).
+  if (
+    targetStatus === 'success' &&
+    typeof payload.amount === 'number' &&
+    payload.amount !== payment.amount
+  ) {
+    pvitLog.error({
+      event: 'pvit.callback.amount_mismatch',
+      merchantReferenceId: payload.merchantReferenceId,
+      pvitTransactionId: payload.transactionId,
+      expectedAmount: payment.amount,
+      receivedAmount: payload.amount,
+    })
+    await db
+      .update(payments)
+      .set({
+        status: 'failed',
+        pvitTransactionId: payload.transactionId,
+        pvitCallbackReceivedAt: new Date(),
+        rawCallbackPayload: payload as unknown as Record<string, unknown>,
+        updatedAt: new Date(),
+      })
+      .where(eq(payments.id, payment.id))
+    return { handled: true, status: 'failed', idempotent: false }
   }
 
   const { order, decrementedStock } = await db.transaction(async (tx) => {
@@ -134,6 +164,25 @@ export async function processPvitCallback(
         .where(eq(orderItems.orderId, payment.orderId))
 
       for (const line of items) {
+        // Verrou de ligne : sérialise les confirmations concurrentes sur le
+        // même produit pour empêcher une survente sous forte charge.
+        const [stockRow] = await tx
+          .select({ stockQuantity: products.stockQuantity })
+          .from(products)
+          .where(eq(products.id, line.productId))
+          .for('update')
+          .limit(1)
+
+        if (stockRow && stockRow.stockQuantity < line.quantity) {
+          pvitLog.warn({
+            event: 'pvit.callback.stock_oversell',
+            merchantReferenceId: payload.merchantReferenceId,
+            productId: line.productId,
+            available: stockRow.stockQuantity,
+            requested: line.quantity,
+          })
+        }
+
         await tx
           .update(products)
           .set({

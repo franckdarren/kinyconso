@@ -1,18 +1,18 @@
+import { createHmac, timingSafeEqual } from 'node:crypto'
+
 import { NextResponse, type NextRequest } from 'next/server'
 
 import { pvitLog } from '@/features/payments/pvit/logger'
-import { processPvitCallback } from '@/features/payments/pvit/process-callback'
+import { reconcilePvitPayment } from '@/features/payments/pvit/reconcile'
 import { pvitCallbackPayloadSchema } from '@/features/payments/pvit/schemas'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 /**
- * Whitelist d'IP source PVIT.
- * Tant que PVIT n'a pas communiqué une liste fixe, on garde la vérification
- * désactivée (variable d'env `PVIT_CALLBACK_ALLOWED_IPS` séparée par des
- * virgules). Si la variable est vide, on accepte toute origine — la sécurité
- * repose alors sur l'idempotence + signature (futur).
+ * Whitelist d'IP source PVIT (optionnelle).
+ * `PVIT_CALLBACK_ALLOWED_IPS` = liste séparée par des virgules. Vide ⇒ pas de
+ * filtrage IP (la sécurité repose alors sur la re-vérification serveur→PVIT).
  */
 function isAllowedOrigin(request: NextRequest): boolean {
   const allowed = process.env.PVIT_CALLBACK_ALLOWED_IPS
@@ -28,6 +28,28 @@ function isAllowedOrigin(request: NextRequest): boolean {
   return list.includes(ip)
 }
 
+/**
+ * Vérifie une signature HMAC-SHA256 du corps brut si `PVIT_CALLBACK_HMAC_SECRET`
+ * est configuré. La signature attendue est fournie via l'en-tête
+ * `x-pvit-signature` (hex). Comparaison à temps constant.
+ *
+ * Renvoie `true` si non configuré (la garantie repose alors entièrement sur
+ * la re-vérification serveur→PVIT plus bas).
+ */
+function isValidSignature(rawBody: string, request: NextRequest): boolean {
+  const secret = process.env.PVIT_CALLBACK_HMAC_SECRET
+  if (!secret) return true
+
+  const provided = request.headers.get('x-pvit-signature')?.trim()
+  if (!provided) return false
+
+  const expected = createHmac('sha256', secret).update(rawBody, 'utf8').digest('hex')
+  const a = Buffer.from(expected, 'utf8')
+  const b = Buffer.from(provided, 'utf8')
+  if (a.length !== b.length) return false
+  return timingSafeEqual(a, b)
+}
+
 export async function POST(request: NextRequest) {
   if (!isAllowedOrigin(request)) {
     pvitLog.warn({
@@ -37,9 +59,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  const rawBody = await request.text()
+
+  if (!isValidSignature(rawBody, request)) {
+    pvitLog.warn({ event: 'pvit.callback.invalid_signature' })
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
   let json: unknown
   try {
-    json = await request.json()
+    json = JSON.parse(rawBody) as unknown
   } catch {
     pvitLog.warn({ event: 'pvit.callback.invalid_json' })
     return NextResponse.json({ error: 'Corps JSON invalide' }, { status: 400 })
@@ -54,21 +83,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Payload invalide' }, { status: 400 })
   }
 
+  // On ne fait JAMAIS confiance au `status`/`amount` du corps de requête :
+  // le webhook n'est qu'un déclencheur. L'état faisant autorité est récupéré
+  // côté serveur via l'API PVIT authentifiée (X-Secret).
   try {
-    const outcome = await processPvitCallback(parsed.data)
-    // PVIT attend toujours { transactionId, responseCode }, même en cas
-    // de référence inconnue : on répond 200 pour éviter les rejeux infinis.
+    const result = await reconcilePvitPayment(parsed.data.merchantReferenceId)
     return NextResponse.json({
       transactionId: parsed.data.transactionId,
-      responseCode: parsed.data.responseCode,
-      handled: outcome.handled,
+      responseCode: result.responseCode,
+      handled: result.outcome?.handled ?? false,
     })
   } catch (error) {
+    // Échec de re-vérification (réseau PVIT...) : on répond 200 pour éviter
+    // les rejeux infinis. Le fallback /api/pvit/check-status + le cron
+    // réconcilieront l'état ultérieurement.
     pvitLog.error({
-      event: 'pvit.callback.processing_failed',
+      event: 'pvit.callback.reconcile_failed',
       merchantReferenceId: parsed.data.merchantReferenceId,
       error: error instanceof Error ? error.message : String(error),
     })
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+    return NextResponse.json({
+      transactionId: parsed.data.transactionId,
+      responseCode: parsed.data.responseCode,
+      handled: false,
+    })
   }
 }

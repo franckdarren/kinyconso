@@ -3,22 +3,10 @@ import { and, eq, lt } from 'drizzle-orm'
 
 import { db } from '@/db'
 import { orders } from '@/db/schema'
+import { isAuthorizedCron } from '@/lib/utils/cron-auth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-function isAuthorized(request: NextRequest): boolean {
-  const expected = process.env.CRON_SECRET
-  if (!expected) return false
-
-  const header = request.headers.get('authorization')
-  if (header === `Bearer ${expected}`) return true
-
-  const querySecret = request.nextUrl.searchParams.get('secret')
-  if (querySecret && querySecret === expected) return true
-
-  return false
-}
 
 /**
  * Cron Vercel — annule les commandes restées en `pending` depuis plus de 30 min.
@@ -27,7 +15,7 @@ function isAuthorized(request: NextRequest): boolean {
  * Planification : toutes les heures via vercel.json.
  */
 export async function GET(request: NextRequest) {
-  if (!isAuthorized(request)) {
+  if (!isAuthorizedCron(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

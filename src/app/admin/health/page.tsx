@@ -17,8 +17,10 @@ async function fetchHealth(): Promise<HealthPayload | null> {
     const headersList = await headers()
     const host = headersList.get('host') ?? 'localhost:3000'
     const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
+    const cronSecret = process.env.CRON_SECRET
     const res = await fetch(`${protocol}://${host}/api/health`, {
       cache: 'no-store',
+      headers: cronSecret ? { authorization: `Bearer ${cronSecret}` } : undefined,
     })
     return (await res.json()) as HealthPayload
   } catch {
@@ -129,7 +131,7 @@ export default async function AdminHealthPage() {
             <span>
               <strong className="text-foreground">Token PVIT expiré</strong> — appeler manuellement{' '}
               <code className="bg-muted rounded px-1 py-0.5 text-xs">
-                GET /api/cron/pvit-token?secret=&#123;CRON_SECRET&#125;
+                GET /api/cron/pvit-token (header Authorization: Bearer &#123;CRON_SECRET&#125;)
               </code>
             </span>
           </li>
@@ -147,7 +149,8 @@ export default async function AdminHealthPage() {
             <span>
               <strong className="text-foreground">Commandes pending bloquées</strong> — appeler{' '}
               <code className="bg-muted rounded px-1 py-0.5 text-xs">
-                GET /api/cron/cleanup-pending-orders?secret=&#123;CRON_SECRET&#125;
+                GET /api/cron/cleanup-pending-orders (header Authorization: Bearer
+                &#123;CRON_SECRET&#125;)
               </code>
             </span>
           </li>

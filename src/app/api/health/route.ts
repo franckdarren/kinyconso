@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { sql, eq } from 'drizzle-orm'
 
 import { db } from '@/db'
 import { appConfig } from '@/db/schema'
 import { PVIT_APP_CONFIG_KEY, PVIT_SECRET_REFRESH_MARGIN_MS } from '@/config/pvit'
 import { isFcmConfigured } from '@/config/fcm'
+import { isAuthorizedCron } from '@/lib/utils/cron-auth'
 import type { PvitStoredSecret } from '@/features/payments/pvit/types'
 
 export const runtime = 'nodejs'
@@ -118,17 +119,29 @@ function worstStatus(statuses: ServiceStatus[]): ServiceStatus {
   return 'ok'
 }
 
-export async function GET() {
+/** Retire les champs sensibles (messages d'erreur DB, latences, état infra). */
+function redact(check: ServiceCheck): ServiceCheck {
+  return { status: check.status }
+}
+
+export async function GET(request: NextRequest) {
   const [database, pvit] = await Promise.all([checkDatabase(), checkPvit()])
   const fcm = checkFcm()
 
   const services = { database, pvit, fcm }
   const overall = worstStatus(Object.values(services).map((s) => s.status))
 
+  // Les détails (messages d'erreur, latences, état du token PVIT) ne sont
+  // exposés qu'aux appelants authentifiés. Un moniteur d'uptime anonyme ne
+  // reçoit que les statuts agrégés.
+  const detailed = isAuthorizedCron(request)
+
   const payload: HealthPayload = {
     status: overall,
     checkedAt: new Date().toISOString(),
-    services,
+    services: detailed
+      ? services
+      : { database: redact(database), pvit: redact(pvit), fcm: redact(fcm) },
   }
 
   const httpStatus = overall === 'down' ? 503 : 200

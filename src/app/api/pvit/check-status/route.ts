@@ -4,9 +4,8 @@ import { eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { orders, payments } from '@/db/schema'
 import { getCurrentUser } from '@/features/auth/queries/get-current-user'
-import { pvitCheckStatus } from '@/features/payments/pvit/client'
 import { pvitLog } from '@/features/payments/pvit/logger'
-import { processPvitCallback } from '@/features/payments/pvit/process-callback'
+import { reconcilePvitPayment } from '@/features/payments/pvit/reconcile'
 import { checkStatusQuerySchema } from '@/features/payments/pvit/schemas'
 import { PvitError } from '@/features/payments/pvit/types'
 
@@ -77,21 +76,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const remote = await pvitCheckStatus({ merchantReferenceId })
-
-    // Si PVIT renvoie un statut terminal, on rejoue le callback handler
-    // pour appliquer la transition exactement comme un vrai webhook.
-    if (remote.status !== 'PENDING') {
-      await processPvitCallback({
-        transactionId: remote.transactionId,
-        merchantReferenceId,
-        status: remote.status,
-        responseCode: remote.responseCode,
-        amount: remote.amount,
-        operator: remote.operator,
-        message: remote.message,
-      })
-    }
+    // Réconciliation faisant autorité : interroge PVIT côté serveur et
+    // applique la transition. Même chemin que le webhook.
+    const reconciled = await reconcilePvitPayment(merchantReferenceId)
 
     // Relire l'état après mise à jour éventuelle.
     const [refreshedPayment] = await db
@@ -112,7 +99,7 @@ export async function GET(request: NextRequest) {
       orderId: paymentRow.orderId,
       orderNumber: orderRow.orderNumber,
       orderStatus: refreshedOrder?.status ?? orderRow.status,
-      remote: { status: remote.status, responseCode: remote.responseCode },
+      remote: { status: reconciled.remoteStatus, responseCode: reconciled.responseCode },
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erreur PVIT'
