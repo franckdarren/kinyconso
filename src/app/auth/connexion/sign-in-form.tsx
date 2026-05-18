@@ -42,7 +42,7 @@ export function SignInForm({ redirectTo, initialError }: SignInFormProps) {
         return
       }
       toast.success('Connexion réussie')
-      router.push(redirectTo)
+      router.push(redirectTo !== '/' ? redirectTo : result.data.redirectTo)
       router.refresh()
     })
   })

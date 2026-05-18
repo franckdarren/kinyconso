@@ -9,5 +9,5 @@ export async function signOut(): Promise<never> {
   const supabase = await createSupabaseServerClient()
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
-  redirect('/')
+  redirect('/auth/connexion')
 }

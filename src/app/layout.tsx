@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
-import { Header } from '@/components/shared/header'
-import { Footer } from '@/components/shared/footer'
 import { CartProviders } from '@/components/shared/cart-providers'
 import { InstallPrompt } from '@/components/shared/install-prompt'
 import { Toaster } from '@/components/ui/toaster'
@@ -90,9 +88,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="bg-background text-foreground flex min-h-full flex-col">
-        <Header />
-        <main className="flex flex-1 flex-col">{children}</main>
-        <Footer />
+        <main className="flex min-h-0 flex-1 flex-col">{children}</main>
         <CartProviders />
         <Toaster />
         <InstallPrompt />

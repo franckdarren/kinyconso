@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache'
 
 import { createSupabaseServerClient } from '@/lib/supabase/server'
-import { siteConfig } from '@/config/site'
 import type { ActionResult } from '@/types/actions'
 
 import { signInSchema, type SignInInput } from '../schemas/auth.schema'
@@ -20,7 +19,7 @@ export async function signIn(input: SignInInput): Promise<ActionResult<{ redirec
   }
 
   const supabase = await createSupabaseServerClient()
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error, data } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
     password: parsed.data.password,
   })
@@ -29,7 +28,14 @@ export async function signIn(input: SignInInput): Promise<ActionResult<{ redirec
     return { success: false, error: translateAuthError(error.message) }
   }
 
+  const { data: profile } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', data.user.id)
+    .maybeSingle()
+
   revalidatePath('/', 'layout')
 
-  return { success: true, data: { redirectTo: siteConfig.url } }
+  const redirectTo = profile?.role === 'admin' ? '/admin' : '/'
+  return { success: true, data: { redirectTo } }
 }
